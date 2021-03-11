@@ -2,7 +2,7 @@
   "name": "SR",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +23,7 @@
     "express": "^4.17.1",
     "express-dom": "^5.13.4",
     "http-server": "^0.12.3",
+    "ibm-watson": "^6.0.3",
     "jsdom": "^16.4.0",
     "path": "^0.12.7",
     "socket.io": "^3.0.3"

@@ -2,9 +2,9 @@
 <meta charset="utf-8">
 <head>
   <title>Transcription</title>
-  <!-- <script src="http://localhost:8000/socket.io/socket.io.js"></script> -->
+  <script src="http://localhost:8000/socket.io/socket.io.js"></script>
   <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
-  <!-- <script  src="client.js"></script> -->
+  <script  src="client.js"></script>
 </head>
 
 <style>
@@ -148,13 +148,17 @@
 
 <script>
   var langs =
-[['English',         ['en-AU', 'Australia'],
+[
+ ['English',         ['en-AU', 'Australia'],
                      ['en-CA', 'Canada'],
                      ['en-IN', 'India'],
                      ['en-GB', 'United Kingdom'],
-                     ['en-US', 'United States']],
+                     ['en-US', 'United States']  
+ ],
 //  ['ગુજરાતી',           ['gu-IN']],
- ['मराठी',             ['mr-IN']]]
+//  ['मराठी',             ['mr-IN']],
+ ['हिन्दी',             ['hi-IN']]
+]
 //  ['Magyar',          ['hu-HU']],
 //  ['ລາວ',              ['lo-LA']]
 ;
@@ -195,6 +199,7 @@ if (!('webkitSpeechRecognition' in window)) {
   recognition.interimResults = true;
 
   recognition.onstart = function() {
+    console.log("Recognition is started");
     recognizing = true;
     showInfo('info_speak_now');
     start_img.src = 'mic-animate.gif';
@@ -222,6 +227,7 @@ if (!('webkitSpeechRecognition' in window)) {
   };
 
   recognition.onend = function() {
+    console.log("Recognition is ended");
     recognizing = false;
     if (ignore_onend) {
       return;
@@ -262,7 +268,7 @@ if (!('webkitSpeechRecognition' in window)) {
     final_span.innerHTML =final;
     interim_span.innerHTML = prefinal;
 
-    socket.emit('send' ,{ FT: final_transcript, IT: interim_transcript});
+    // socket.emit('send' ,{ FT: final_transcript, IT: interim_transcript});
     
     if (final_transcript || interim_transcript) {
       showButtons('inline-block');
@@ -322,10 +328,17 @@ function emailButton() {
 
 function startButton(event) {
   if (recognizing) {
+     console.log("is ended and sending data to server to");
+     let langgs = document.getElementById('select_language').value;
+     console.log(langs[langgs][0]);
+     socket.emit('send-to-server' ,{ FT: final_transcript , language :langs[langgs][0] });
+
      recognition.stop();
+     
        flag=0;
      return;
   }
+  console.log(" is started");
   final_transcript = '';
   recognition.lang = select_dialect.value;
   recognition.start();

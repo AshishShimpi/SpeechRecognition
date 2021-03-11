@@ -13,11 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('newly connected user is ',na);
   })
   //3
-  socket.on(`receive` , tata =>{
+  socket.on(`client-receive` , tata =>{
     bar[0].innerHTML =tata.F ;
-    spacebar[0].innerHTML = tata.I;
+    // spacebar[0].innerHTML = tata.I;
     user.innerHTML = tata.user;  
-})
+  })
+
+  
+
 
 
    

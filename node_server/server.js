@@ -4,25 +4,74 @@ let app = express();
 
 // app.use(cors());
 
+
+const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
+const { IamAuthenticator } = require('ibm-watson/auth');
+let translatedText;
+
+const languageTranslator = new LanguageTranslatorV3({
+  //  Please fill the blanks with your credentials
+  version: '',
+
+  authenticator: new IamAuthenticator({
+  
+    apikey: '',
+  }),
+  serviceUrl: '',
+  
+//  disableSslVerification: true,
+});
+
+
+
 const io = require(`socket.io`)(8000);
 
-console.log(`server started at 8000`);
+console.log(`video call server started at 8000`);
 
 let users={};
+
+let model_lang= {
+  "English" :"en-hi",
+  "हिन्दी" : "hi-en"
+}
 
 io.on('connection' , socket =>{
     
     socket.on('new' , name => {
-        console.log('new-user is' , name);
+        console.log('new-user is' , name,"\n");
         users[socket.id] = name;
         
         socket.broadcast.emit('lets-start', name );
     });
 
-    socket.on(`send` , data=>{
-        console.log(data.FT , data.IT );
+    // Data received from the each client
+    socket.on(`send-to-server` , data=>{
 
-    socket.broadcast.emit(`receive` , {F:data.FT , I: data.IT , user :users[socket.id] })
-})
+        //Data in same language from client is printed on colsole
+        console.log("Data of user ",users[socket.id]," is ",data.FT ,"and laguage of client is ",data.language,"\n");
+
+        // Passing the data to language translator model to get translated text
+        const translateParams = {
+            text: data.FT,
+            modelId: model_lang[data.language],
+          };
+
+          console.log(" The text to be translated is ",translateParams.text , "and language model is ",model_lang[data.language]);
+          
+          languageTranslator.translate(translateParams)
+            .then(translationResult => {
+                // Translated text will be shown on server and 
+                translatedText= translationResult["result"]["translations"][0]["translation"];
+                console.log(translatedText);
+                // [{"translation":"आप कैसे हैं"}]
+                // Then broadcasted to other users
+                socket.broadcast.emit(`client-receive` , {F:translatedText  , user :users[socket.id] })
+            
+            })
+            .catch(err => {
+              console.log('error:', err);
+            });
+   
+    })
 
 });
