@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <head>
   <title>Transcription</title>
-  <script src="http://localhost:8000/socket.io/socket.io.js"></script>
+  <script src="https://speere.herokuapp.com/socket.io/socket.io.js"></script>
   <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
   <script  src="client.js"></script>
 </head>
@@ -90,7 +90,7 @@
 
 <body>
   
-  <h5  id="headline" style="text-align: center;">  Transcript of video calling</h5>
+  <h5  id="headline" style="text-align: center;font-size:xx-large">  Transcript of video calling</h5>
    <div id="info">
      <p id="info_start">Click on the microphone icon </p>
   
@@ -124,15 +124,21 @@
   
     <span id="final_span" class="final"></span>
     <span id="interim_span" class="interim"></span>
-  
+
   </div>
   <div class="center">
        
     <p>
     <div id="div_language">
-      <select id="select_language" onchange="updateCountry()"></select>
+      <select id="select_language" >
+                
+        <option value='en-IN'>English</option>
+        <option value='hi-IN'>हिन्दी</option>
+      </select>
+                
+      </select>
       &nbsp;&nbsp;
-      <select id="select_dialect"></select>
+      <!-- <select id="select_dialect"></select> -->
     </div>
   </div>
 
@@ -146,42 +152,50 @@
 
 </body>
 
+
 <script>
-  var langs =
-[
- ['English',         ['en-AU', 'Australia'],
-                     ['en-CA', 'Canada'],
-                     ['en-IN', 'India'],
-                     ['en-GB', 'United Kingdom'],
-                     ['en-US', 'United States']  
- ],
-//  ['ગુજરાતી',           ['gu-IN']],
-//  ['मराठी',             ['mr-IN']],
- ['हिन्दी',             ['hi-IN']]
-]
-//  ['Magyar',          ['hu-HU']],
-//  ['ລາວ',              ['lo-LA']]
-;
+
+var lang={
+  "en-IN":"English" ,
+  "hi-IN": "हिन्दी" 
+}
+
+
+//   var langs =
+// [
+//  ['English',         ['en-AU', 'Australia'],
+//                      ['en-CA', 'Canada'],
+//                      ['en-IN', 'India'],
+//                      ['en-GB', 'United Kingdom'],
+//                      ['en-US', 'United States']  
+//  ],
+// //  ['ગુજરાતી',           ['gu-IN']],
+// //  ['मराठी',             ['mr-IN']],
+//  ['हिन्दी',             ['hi-IN']]
+// ]
+// //  ['Magyar',          ['hu-HU']],
+// //  ['ລາວ',              ['lo-LA']]
+// ;
 
     
-for (var i = 0; i < langs.length; i++) {
-  select_language.options[i] = new Option(langs[i][0], i);
-}
-select_language.selectedIndex = 0;
-updateCountry();
-select_dialect.selectedIndex = 2;
+// for (var i = 0; i < langs.length; i++) {
+//   select_language.options[i] = new Option(langs[i][0], i);
+// }
+// select_language.selectedIndex = 0;
+// updateCountry();
+// select_dialect.selectedIndex = 2;
 showInfo('info_start');
 
-function updateCountry() {
-  for (var i = select_dialect.options.length - 1; i >= 0; i--) {
-    select_dialect.remove(i);
-  }
-  var list = langs[select_language.selectedIndex];
-  for (var i = 1; i < list.length; i++) {
-    select_dialect.options.add(new Option(list[i][1], list[i][0]));
-  }
-  select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
-}
+// function updateCountry() {
+//   for (var i = select_dialect.options.length - 1; i >= 0; i--) {
+//     select_dialect.remove(i);
+//   }
+//   var list = langs[select_language.selectedIndex];
+//   for (var i = 1; i < list.length; i++) {
+//     select_dialect.options.add(new Option(list[i][1], list[i][0]));
+//   }
+//   select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+// }
 
 var create_email = false;
 var final_transcript = '';
@@ -194,7 +208,8 @@ if (!('webkitSpeechRecognition' in window)) {
 } else {
   start_button.style.display = 'inline-block';
   // this is webspeech api
-  var recognition = new webkitSpeechRecognition();
+  var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+  var recognition = new SpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = true;
 
@@ -330,17 +345,18 @@ function startButton(event) {
   if (recognizing) {
      console.log("is ended and sending data to server to");
      let langgs = document.getElementById('select_language').value;
-     console.log(langs[langgs][0]);
-     socket.emit('send-to-server' ,{ FT: final_transcript , language :langs[langgs][0] });
+     console.log(langgs);
+     socket.emit('send-to-server' ,{ FT: final_transcript , language : langgs});
 
      recognition.stop();
      
        flag=0;
      return;
   }
+  let langgs = document.getElementById('select_language').value;
   console.log(" is started");
   final_transcript = '';
-  recognition.lang = select_dialect.value;
+  recognition.lang = langgs;
   recognition.start();
   ignore_onend = false;
   final_span.innerHTML = '';
@@ -369,7 +385,7 @@ function showButtons(style) {
   if (style == current_style) {
     return;
   }
-  // current_style = style;
+  current_style = style;
   // copy_button.style.display = style;
   // email_button.style.display = style;
   // copy_info.style.display = 'none';

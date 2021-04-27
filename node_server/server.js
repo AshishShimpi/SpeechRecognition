@@ -7,20 +7,20 @@ let app = express();
 
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 const { IamAuthenticator } = require('ibm-watson/auth');
-let translatedText;
+let translatedText="yet to get text";
 
-const languageTranslator = new LanguageTranslatorV3({
-  //  Please fill the blanks with your credentials
-  version: '',
+// const languageTranslator = new LanguageTranslatorV3({
 
-  authenticator: new IamAuthenticator({
+//   version: '',
+
+//   authenticator: new IamAuthenticator({
   
-    apikey: '',
-  }),
-  serviceUrl: '',
+//     apikey: '',
+//   }),
+//   serviceUrl: '',
   
-//  disableSslVerification: true,
-});
+// //  disableSslVerification: true,
+// });
 
 
 
@@ -30,9 +30,14 @@ console.log(`video call server started at 8000`);
 
 let users={};
 
-let model_lang= {
-  "English" :"en-hi",
-  "हिन्दी" : "hi-en"
+// let model_lang= {
+//   "English" :"en-hi",
+//   "हिन्दी" : "hi-en"
+// }
+
+let model_lang ={
+  "en-IN":"en-hi",
+  "hi-IN":"hi-en"
 }
 
 io.on('connection' , socket =>{
@@ -58,19 +63,19 @@ io.on('connection' , socket =>{
 
           console.log(" The text to be translated is ",translateParams.text , "and language model is ",model_lang[data.language]);
           
-          languageTranslator.translate(translateParams)
-            .then(translationResult => {
-                // Translated text will be shown on server and 
-                translatedText= translationResult["result"]["translations"][0]["translation"];
-                console.log(translatedText);
-                // [{"translation":"आप कैसे हैं"}]
-                // Then broadcasted to other users
+          // languageTranslator.translate(translateParams)
+          //   .then(translationResult => {
+          //       // Translated text will be shown on server and 
+          //       translatedText= translationResult["result"]["translations"][0]["translation"];
+          //       console.log(translatedText);
+          
+          //       // Then broadcasted to other users
                 socket.broadcast.emit(`client-receive` , {F:translatedText  , user :users[socket.id] })
             
-            })
-            .catch(err => {
-              console.log('error:', err);
-            });
+          //   })
+          //   .catch(err => {
+          //     console.log('error:', err);
+          //   });
    
     })
 
