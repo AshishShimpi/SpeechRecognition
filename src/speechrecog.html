@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <head>
   <title>Transcription</title>
-  <script src="https://speere.herokuapp.com/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
   <script  src="client.js"></script>
 </head>
@@ -160,42 +160,7 @@ var lang={
   "hi-IN": "हिन्दी" 
 }
 
-
-//   var langs =
-// [
-//  ['English',         ['en-AU', 'Australia'],
-//                      ['en-CA', 'Canada'],
-//                      ['en-IN', 'India'],
-//                      ['en-GB', 'United Kingdom'],
-//                      ['en-US', 'United States']  
-//  ],
-// //  ['ગુજરાતી',           ['gu-IN']],
-// //  ['मराठी',             ['mr-IN']],
-//  ['हिन्दी',             ['hi-IN']]
-// ]
-// //  ['Magyar',          ['hu-HU']],
-// //  ['ລາວ',              ['lo-LA']]
-// ;
-
-    
-// for (var i = 0; i < langs.length; i++) {
-//   select_language.options[i] = new Option(langs[i][0], i);
-// }
-// select_language.selectedIndex = 0;
-// updateCountry();
-// select_dialect.selectedIndex = 2;
 showInfo('info_start');
-
-// function updateCountry() {
-//   for (var i = select_dialect.options.length - 1; i >= 0; i--) {
-//     select_dialect.remove(i);
-//   }
-//   var list = langs[select_language.selectedIndex];
-//   for (var i = 1; i < list.length; i++) {
-//     select_dialect.options.add(new Option(list[i][1], list[i][0]));
-//   }
-//   select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
-// }
 
 var create_email = false;
 var final_transcript = '';
@@ -282,8 +247,6 @@ if (!('webkitSpeechRecognition' in window)) {
     let prefinal =linebreak(interim_transcript);
     final_span.innerHTML =final;
     interim_span.innerHTML = prefinal;
-
-    // socket.emit('send' ,{ FT: final_transcript, IT: interim_transcript});
     
     if (final_transcript || interim_transcript) {
       showButtons('inline-block');
@@ -386,10 +349,6 @@ function showButtons(style) {
     return;
   }
   current_style = style;
-  // copy_button.style.display = style;
-  // email_button.style.display = style;
-  // copy_info.style.display = 'none';
-  // email_info.style.display = 'none';
 
 }
 </script>

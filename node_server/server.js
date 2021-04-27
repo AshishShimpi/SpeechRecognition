@@ -1,9 +1,5 @@
 let express = require('express');
 let app = express();
-// let cors = require('cors');
-
-// app.use(cors());
-
 
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
 const { IamAuthenticator } = require('ibm-watson/auth');
@@ -22,18 +18,11 @@ let translatedText="yet to get text";
 // //  disableSslVerification: true,
 // });
 
-
-
 const io = require(`socket.io`)(8000);
 
 console.log(`video call server started at 8000`);
 
 let users={};
-
-// let model_lang= {
-//   "English" :"en-hi",
-//   "हिन्दी" : "hi-en"
-// }
 
 let model_lang ={
   "en-IN":"en-hi",

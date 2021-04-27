@@ -1,4 +1,4 @@
-const socket =  io('https://speere.herokuapp.com/'); 
+const socket =  io('https://localhost:8000/'); 
 document.addEventListener("DOMContentLoaded", () => {
 
   const name = prompt('enter your name');
